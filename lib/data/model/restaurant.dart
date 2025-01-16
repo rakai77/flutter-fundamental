@@ -34,4 +34,15 @@ class Restaurant {
       _ => throw const FormatException('Failed to load tourism data.')
     };
   }
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic> {
+      "id": id,
+      "name": name,
+      "description": description,
+      "pictureId": pictureId,
+      "city": city,
+      "rating": rating
+    };
+  }
 }

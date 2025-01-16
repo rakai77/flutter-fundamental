@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/model/restaurant.dart';
-import 'package:restaurant_app/provider/detail/bookmark_list_provider.dart';
+import 'package:restaurant_app/provider/bookmark/restaurant_database_provider.dart';
 import '../../provider/detail/bookmark_icon_provider.dart';
 
 class BookmarkIconWidget extends StatefulWidget {
@@ -18,31 +18,35 @@ class _BookmarkIconWidgetState extends State<BookmarkIconWidget> {
 
   @override
   void initState() {
-    final bookmarkListProvider = context.read<BookmarkListProvider>();
-    final bookmarkIconProvider = context.read<BookmarkIconProvider>();
-
-    Future.microtask(() {
-      final restaurantList = bookmarkListProvider.checkItemBookmark(widget.restaurant);
-      bookmarkIconProvider.isBookmarked = restaurantList;
-    });
-
     super.initState();
+
+    final bookmarkIconProvider = context.read<BookmarkIconProvider>();
+    final bookmarkDatabaseProvider = context.read<RestaurantDatabaseProvider>();
+
+    Future.microtask(() async {
+      await bookmarkDatabaseProvider.loadRestaurantValueById(widget.restaurant.id);
+      final value = bookmarkDatabaseProvider.restaurant == null
+          ? false
+          : bookmarkDatabaseProvider.restaurant!.id == widget.restaurant.id;
+      bookmarkIconProvider.isBookmarked = value;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () {
+      onPressed: () async {
         final bookmarkIconProvider = context.read<BookmarkIconProvider>();
-        final bookmarkListProvider = context.read<BookmarkListProvider>();
+        final bookmarkDatabaseProvider = context.read<RestaurantDatabaseProvider>();
         final isBookmarked = bookmarkIconProvider.isBookmarked;
 
         if(isBookmarked) {
-          bookmarkListProvider.removeBookmark(widget.restaurant);
+         await bookmarkDatabaseProvider.removeRestaurantValueById(widget.restaurant.id);
         } else {
-          bookmarkListProvider.addBookmark(widget.restaurant);
+         await bookmarkDatabaseProvider.saveRestaurantValue(widget.restaurant);
         }
-        context.read<BookmarkIconProvider>().isBookmarked = !isBookmarked;
+        bookmarkIconProvider.isBookmarked = !isBookmarked;
+        bookmarkDatabaseProvider.loadAllRestaurantValue();
       },
       icon: Icon(
         context.watch<BookmarkIconProvider>().isBookmarked
