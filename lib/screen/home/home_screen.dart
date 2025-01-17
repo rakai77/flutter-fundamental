@@ -29,6 +29,20 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Restaurant'),
+        centerTitle: false,
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(
+                    context,
+                    NavigationRoute.settingRoute.name
+                );
+              },
+              icon: Icon(
+                Icons.settings
+              )
+          )
+        ],
       ),
       body: Consumer<RestaurantListProvider>(
         builder: (context, value, child) {
