@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/database/restaurant_database_service.dart';
+import 'package:restaurant_app/notification/local_notification_service.dart';
 import 'package:restaurant_app/provider/bookmark/restaurant_database_provider.dart';
 import 'package:restaurant_app/provider/detail/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/home/restaurant_list_provider.dart';
 import 'package:restaurant_app/provider/main/index_nav_provider.dart';
+import 'package:restaurant_app/provider/notification/local_notification_provider.dart';
 import 'package:restaurant_app/provider/setting/theme_provider.dart';
 import 'package:restaurant_app/screen/detail/detail_screen.dart';
 import 'package:restaurant_app/screen/main/main_screen.dart';
@@ -44,6 +46,16 @@ void main() {
           ),
           ChangeNotifierProvider(
             create: (context) => ThemeProvider()..getTheme(),
+          ),
+          Provider(
+            create: (context) => LocalNotificationService()
+              ..init()
+              ..configureLocalTimeZone(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => LocalNotificationProvider(
+              context.read<LocalNotificationService>()..requestPermissions()
+            ),
           )
         ],
         child: const MyApp(),
