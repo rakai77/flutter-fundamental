@@ -29,7 +29,7 @@ void main() {
       final emptyResponse = RestaurantListResponse(
         error: false,
         count: 0,
-        message: 'success',
+        message: "success",
         restaurants: [],
       );
 
@@ -45,10 +45,10 @@ void main() {
     test("test load data and return data dummy", () async {
       final dummyResponse = RestaurantListResponse(
         error: false,
-        message: 'success',
+        message: "success",
         count: 1,
         restaurants: [
-          Restaurant(id: '1', name: 'Restaurant A', city: 'City A', description: 'Description A', pictureId: '1A', rating: 4.5)
+          Restaurant(id: "1", name: "Restaurant A", city: "City A", description: "Description A", pictureId: "1A", rating: 4.5)
         ],
       );
 
@@ -63,13 +63,13 @@ void main() {
     });
     
     test("test load data and return Error", () async {
-      when(mockApiService.getRestaurantList()).thenThrow(Exception('Failed to load data'));
+      when(mockApiService.getRestaurantList()).thenThrow(Exception("Failed to load data"));
 
       await restaurantListProvider.fetchRestaurantList();
 
       expect(restaurantListProvider.resultState, isA<RestaurantListErrorState>());
       final state = restaurantListProvider.resultState as RestaurantListErrorState;
-      expect(state.error, 'Exception: Failed to load data');
+      expect(state.error, "Exception: Failed to load data");
     });
 
   });
